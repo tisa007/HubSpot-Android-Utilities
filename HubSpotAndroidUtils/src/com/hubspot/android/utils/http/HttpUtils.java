@@ -10,6 +10,7 @@ import java.io.UnsupportedEncodingException;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -17,7 +18,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import android.util.Log;
 
 public class HttpUtils {
-    private DefaultHttpClient httpClient;
+    private HttpClient httpClient;
 
     private final String LOG_TAG = "hubspot.utils";
 
@@ -108,7 +109,7 @@ public class HttpUtils {
         }
     }
 
-    protected void setHttpClient(DefaultHttpClient httpClient) {
+    protected void setHttpClient(HttpClient httpClient) {
         this.httpClient = httpClient;
     }
 }
