@@ -1,4 +1,4 @@
-package com.hubspot.android.utils;
+package com.hubspot.android.utils.http;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -16,25 +16,25 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.util.Log;
 
-public class WebUtils {
-    private static final DefaultHttpClient httpClient = new DefaultHttpClient();
+public class HttpUtils {
+    private DefaultHttpClient httpClient;
 
-    private static final String LOG_TAG = "hubspot.utils";
+    private final String LOG_TAG = "hubspot.utils";
 
     /**
      * Retrieve the contents of a url as a Reader.
      * @param location
      * @return
-     * @throws WebUtilsException
+     * @throws HttpUtilsException
      */
-    public static Reader getReaderForUrl(final String location) throws WebUtilsException {
+    public Reader getReaderForUrl(final String location) throws HttpUtilsException {
         HttpGet conn = new HttpGet(location);
         try {
             return new BufferedReader(new InputStreamReader(getStreamFromConnection(conn), "UTF-8"));
         } catch (UnsupportedEncodingException e) {
             String message = String.format("Unsupported encoding for response stream when calling %s", location);
             Log.e(LOG_TAG, message, e);
-            throw new WebUtilsException(message, e);
+            throw new HttpUtilsException(message, e);
         }
     }
 
@@ -42,9 +42,9 @@ public class WebUtils {
      * Retrieve the contents of a url as a string.
      * @param url
      * @return
-     * @throws WebUtilsException
+     * @throws HttpUtilsException
      */
-    public static String get(final String url) throws WebUtilsException {
+    public String get(final String url) throws HttpUtilsException {
         HttpGet httpGet = new HttpGet(url);
         return convertStreamToString(getStreamFromConnection(httpGet));
     }
@@ -54,9 +54,9 @@ public class WebUtils {
      * 
      * @param connection
      * @return
-     * @throws WebUtilsException
+     * @throws HttpUtilsException
      */
-    private static InputStream getStreamFromConnection(final HttpUriRequest connection) throws WebUtilsException {
+    protected InputStream getStreamFromConnection(final HttpUriRequest connection) throws HttpUtilsException {
         HttpEntity entity = null;
         try {
             HttpResponse response = httpClient.execute(connection);
@@ -64,7 +64,7 @@ public class WebUtils {
             return entity.getContent();
         } catch (IOException ioException) {
             Log.w(LOG_TAG, ioException);
-            throw new WebUtilsException(connection.getURI().toString(), connection.getMethod(), null, ioException);
+            throw new HttpUtilsException(connection.getURI().toString(), connection.getMethod(), null, ioException);
         } finally {
             if (entity != null) {
                 try {
@@ -83,7 +83,7 @@ public class WebUtils {
      * @return
      * @throws IOException
      */
-    private static String convertStreamToString(final InputStream is) throws WebUtilsException {
+    protected String convertStreamToString(final InputStream is) throws HttpUtilsException {
         try {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
 
@@ -98,7 +98,7 @@ public class WebUtils {
         } catch (IOException e) {
             String message = "Exception while trying to parse inputs stream from response.";
             Log.e(LOG_TAG, message, e);
-            throw new WebUtilsException(message, e);
+            throw new HttpUtilsException(message, e);
         } finally {
             try {
                 is.close();
@@ -106,5 +106,9 @@ public class WebUtils {
                 // Swallow it, nothing to really do here.
             }
         }
+    }
+
+    protected void setHttpClient(DefaultHttpClient httpClient) {
+        this.httpClient = httpClient;
     }
 }
