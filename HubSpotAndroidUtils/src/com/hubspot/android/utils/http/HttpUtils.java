@@ -13,9 +13,10 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.util.Log;
+
+import com.hubspot.android.utils.Utils;
 
 public class HttpUtils {
     private HttpClient httpClient;
@@ -24,16 +25,20 @@ public class HttpUtils {
 
     /**
      * Retrieve the contents of a url as a Reader.
-     * @param location
+     * @param url
      * @return
      * @throws HttpUtilsException
      */
-    public Reader getReaderForUrl(final String location) throws HttpUtilsException {
-        HttpGet conn = new HttpGet(location);
+    public Reader getReaderForUrl(final String url) throws HttpUtilsException {
+        if (Utils.isEmpty(url)) {
+            throw new IllegalArgumentException("Url must not be null or empty to run GET request.");
+        }
+
+        HttpGet conn = new HttpGet(url);
         try {
             return new BufferedReader(new InputStreamReader(getStreamFromConnection(conn), "UTF-8"));
         } catch (UnsupportedEncodingException e) {
-            String message = String.format("Unsupported encoding for response stream when calling %s", location);
+            String message = String.format("Unsupported encoding for response stream when calling %s", url);
             Log.e(LOG_TAG, message, e);
             throw new HttpUtilsException(message, e);
         }
@@ -46,6 +51,10 @@ public class HttpUtils {
      * @throws HttpUtilsException
      */
     public String get(final String url) throws HttpUtilsException {
+        if (Utils.isEmpty(url)) {
+            throw new IllegalArgumentException("Url must not be null or empty to run GET request.");
+        }
+
         HttpGet httpGet = new HttpGet(url);
         return convertStreamToString(getStreamFromConnection(httpGet));
     }
@@ -61,8 +70,11 @@ public class HttpUtils {
         HttpEntity entity = null;
         try {
             HttpResponse response = httpClient.execute(connection);
-            entity = response.getEntity();
-            return entity.getContent();
+            if (response != null) {
+                entity = response.getEntity();
+                return entity.getContent();
+            }
+            throw new HttpUtilsException(connection.getURI().toString(), connection.getMethod(), null, null);
         } catch (IOException ioException) {
             Log.w(LOG_TAG, ioException);
             throw new HttpUtilsException(connection.getURI().toString(), connection.getMethod(), null, ioException);
