@@ -18,6 +18,9 @@ import android.util.Log;
 
 import com.hubspot.android.utils.Utils;
 
+/**
+ * A set of utilities for retrieving and uploading data via HTTP requests.
+ */
 public class HttpUtils {
     private HttpClient httpClient;
 
@@ -67,6 +70,10 @@ public class HttpUtils {
      * @throws HttpUtilsException
      */
     protected InputStream getStreamFromConnection(final HttpUriRequest connection) throws HttpUtilsException {
+        if (connection == null) {
+            throw new IllegalArgumentException("Can't get response stream from null HttpUriRequest");
+        }
+
         HttpEntity entity = null;
         try {
             HttpResponse response = httpClient.execute(connection);
@@ -97,6 +104,10 @@ public class HttpUtils {
      * @throws IOException
      */
     protected String convertStreamToString(final InputStream is) throws HttpUtilsException {
+        if (is == null) {
+            throw new HttpUtilsException("Null input stream, can't convert to string.");
+        }
+
         try {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
 
@@ -115,7 +126,7 @@ public class HttpUtils {
         } finally {
             try {
                 is.close();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 // Swallow it, nothing to really do here.
             }
         }
