@@ -158,4 +158,16 @@ public class HttpUtilsTest extends AndroidTestCase {
         assertNotNull(thrownEx);
     
     }
+
+    public void testRealGet() {
+        //Reset http client, allow for DefaultHttpClient instead of Mock.
+        httpUtils.setHttpClient(null);
+        String response = null;
+        try {
+            response = httpUtils.get("https://hubapi.com/leads/v1/callback-url?hapikey=demo");
+        } catch (HttpUtilsException e) {
+            fail("Hit exception when trying to run mock get.");
+        }
+        assertFalse(Utils.isEmpty(response));
+    }
 }
