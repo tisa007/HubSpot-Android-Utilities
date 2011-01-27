@@ -13,6 +13,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.util.Log;
 
@@ -76,7 +77,7 @@ public class HttpUtils {
 
         HttpEntity entity = null;
         try {
-            HttpResponse response = httpClient.execute(connection);
+            HttpResponse response = getHttpClient().execute(connection);
             if (response != null) {
                 entity = response.getEntity();
                 return entity.getContent();
@@ -84,8 +85,6 @@ public class HttpUtils {
             throw new HttpUtilsException(connection.getURI().toString(), connection.getMethod(), null, null);
         } catch (IOException ioException) {
             Log.w(LOG_TAG, ioException);
-            throw new HttpUtilsException(connection.getURI().toString(), connection.getMethod(), null, ioException);
-        } finally {
             if (entity != null) {
                 try {
                     entity.consumeContent();
@@ -93,6 +92,7 @@ public class HttpUtils {
                     Log.w(LOG_TAG, ioException2);
                 }
             }
+            throw new HttpUtilsException(connection.getURI().toString(), connection.getMethod(), null, ioException);
         }
     }
 
@@ -132,6 +132,13 @@ public class HttpUtils {
         }
     }
 
+    private HttpClient getHttpClient() {
+        if (httpClient == null) {
+            httpClient = new DefaultHttpClient();
+        }
+        return httpClient;
+    }
+    
     protected void setHttpClient(HttpClient httpClient) {
         this.httpClient = httpClient;
     }

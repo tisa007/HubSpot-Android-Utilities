@@ -2,7 +2,6 @@ package com.hubspot.android.utils.http;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 
 import org.apache.http.client.methods.HttpGet;
@@ -15,6 +14,8 @@ import com.hubspot.android.utils.mock.MockHttpClient;
 
 public class HttpUtilsTest extends AndroidTestCase {
 
+    private static final String TEST_API_URL = "https://api.hubapi.com/leads/v1/callback-url?hapikey=demo";
+    
     private HttpUtils httpUtils;
 
     protected void setUp() throws Exception {
@@ -25,7 +26,7 @@ public class HttpUtilsTest extends AndroidTestCase {
     public void testGet() {
         String response = null;
         try {
-            response = httpUtils.get("https://hubapi.com/leads/v1/callback-url?hapikey=demo");
+            response = httpUtils.get(TEST_API_URL);
         } catch (HttpUtilsException e) {
             fail("Hit exception when trying to run mock get.");
         }
@@ -44,7 +45,7 @@ public class HttpUtilsTest extends AndroidTestCase {
         httpUtils.setHttpClient(new MockHttpClient(true, false));
         thrownEx = null;
         try {
-            httpUtils.get("https://hubapi.com/leads/v1/callback-url?hapikey=demo");
+            httpUtils.get(TEST_API_URL);
         } catch (HttpUtilsException e) {
             thrownEx = e;
         }
@@ -53,7 +54,7 @@ public class HttpUtilsTest extends AndroidTestCase {
         httpUtils.setHttpClient(new MockHttpClient(false, true));
         thrownEx = null;
         try {
-            httpUtils.get("https://hubapi.com/leads/v1/callback-url?hapikey=demo");
+            httpUtils.get(TEST_API_URL);
         } catch (HttpUtilsException e) {
             thrownEx = e;
         }
@@ -62,7 +63,7 @@ public class HttpUtilsTest extends AndroidTestCase {
 
     public void testGetReaderForUrl() {
         try {
-            assertNotNull(httpUtils.getReaderForUrl("https://hubapi.com/leads/v1/callback-url?hapikey=demo"));
+            assertNotNull(httpUtils.getReaderForUrl(TEST_API_URL));
         } catch (HttpUtilsException e) {
             fail("Hit exception when trying to run mock get.");
         }
@@ -80,7 +81,7 @@ public class HttpUtilsTest extends AndroidTestCase {
         httpUtils.setHttpClient(new MockHttpClient(true, false));
         thrownEx = null;
         try {
-            httpUtils.getReaderForUrl("https://hubapi.com/leads/v1/callback-url?hapikey=demo");
+            httpUtils.getReaderForUrl(TEST_API_URL);
         } catch (HttpUtilsException e) {
             thrownEx = e;
         }
@@ -89,7 +90,7 @@ public class HttpUtilsTest extends AndroidTestCase {
         httpUtils.setHttpClient(new MockHttpClient(false, true));
         thrownEx = null;
         try {
-            httpUtils.getReaderForUrl("https://hubapi.com/leads/v1/callback-url?hapikey=demo");
+            httpUtils.getReaderForUrl(TEST_API_URL);
         } catch (HttpUtilsException e) {
             thrownEx = e;
         }
@@ -97,7 +98,7 @@ public class HttpUtilsTest extends AndroidTestCase {
     }
 
     public void testGetStreamFromConnection() {
-        HttpUriRequest request = new HttpGet("https://hubapi.com/leads/v1/callback-url?hapikey=demo");
+        HttpUriRequest request = new HttpGet(TEST_API_URL);
         try {
             assertNotNull(httpUtils.getStreamFromConnection(request));
         } catch (HttpUtilsException e) {
@@ -164,9 +165,9 @@ public class HttpUtilsTest extends AndroidTestCase {
         httpUtils.setHttpClient(null);
         String response = null;
         try {
-            response = httpUtils.get("https://hubapi.com/leads/v1/callback-url?hapikey=demo");
+            response = httpUtils.get(TEST_API_URL);
         } catch (HttpUtilsException e) {
-            fail("Hit exception when trying to run mock get.");
+            fail("Hit exception when trying to run real get.");
         }
         assertFalse(Utils.isEmpty(response));
     }
