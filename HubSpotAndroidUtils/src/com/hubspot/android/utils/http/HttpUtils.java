@@ -108,6 +108,7 @@ public class HttpUtils {
         }
 
         HttpPut httpPut = new HttpPut(url);
+        //TODO: make this support non-JSON types.
         httpPut.setHeader("Content-type", "application/json");
         ByteArrayEntity putEntity;
         try {
