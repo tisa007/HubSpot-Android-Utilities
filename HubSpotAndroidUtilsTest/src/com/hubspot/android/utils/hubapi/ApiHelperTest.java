@@ -1,7 +1,6 @@
 package com.hubspot.android.utils.hubapi;
 
 import java.util.List;
-import java.util.Map;
 
 import android.test.AndroidTestCase;
 
@@ -16,7 +15,7 @@ public class ApiHelperTest extends AndroidTestCase {
     public void testReadUrlToList() {
         Exception thrownEx = null;
         try {
-            apiHelper.readUrlToList(null);
+            apiHelper.readUrlToList(null, null);
         } catch (IllegalArgumentException ex) {
             thrownEx = ex;
         } catch (ApiHelperException ex) {
@@ -24,17 +23,16 @@ public class ApiHelperTest extends AndroidTestCase {
         }
         assertNotNull("Didn't throw IllegalArugmentException for a nul url.", thrownEx);
 
-        List<Map<String, Object>> testResults = null;
+        List<ApiCallbackTest> testResults = null;
         try {
-            testResults = apiHelper.readUrlToList(TEST_API_URL);
+            testResults = apiHelper.readUrlToList(TEST_API_URL, ApiCallbackTest.class);
         } catch (ApiHelperException ex) {
             fail("Hit ApiHelperException when trying to get IllegalArgumentException.");
         }
         assertNotNull(testResults);
 
-        for(Map<String, Object> testResult : testResults) {
-            ApiCallbackTest test = new ApiCallbackTest(testResult);
-            assertFalse(Utils.isEmpty(test.guid));
+        for(ApiCallbackTest testResult : testResults) {
+            assertFalse(Utils.isEmpty(testResult.guid));
         }
     }
 

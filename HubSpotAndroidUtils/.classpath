@@ -3,7 +3,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
-	<classpathentry kind="lib" path="/home/shuenneke/src/android/HubSpot-Android-Utilities/HubSpotAndroidUtils/jackson-core-asl-1.5.4.jar"/>
+	<classpathentry kind="lib" path="/home/shuenneke/src/android/HubSpot-Android-Utilities/HubSpotAndroidUtils/jackson-core-asl-1.5.4.jar" sourcepath="/home/shuenneke/.m2/repository/org/codehaus/jackson/jackson-core-asl/1.5.4/jackson-core-asl-1.5.4-sources.jar"/>
 	<classpathentry kind="lib" path="/home/shuenneke/src/android/HubSpot-Android-Utilities/HubSpotAndroidUtils/jackson-mapper-asl-1.5.4.jar" sourcepath="/home/shuenneke/.m2/repository/org/codehaus/jackson/jackson-mapper-asl/1.5.4/jackson-mapper-asl-1.5.4-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
