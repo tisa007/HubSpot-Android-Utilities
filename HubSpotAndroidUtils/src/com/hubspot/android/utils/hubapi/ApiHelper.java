@@ -22,6 +22,14 @@ public class ApiHelper {
 
     private static final ObjectMapper mapper = new ObjectMapper();
     private HttpUtils httpUtils;
+
+    private final String apiKey;
+    private final String baseApiUrl;
+    
+    public ApiHelper(final String apiKey, final String baseApiUrl) {
+        this.apiKey = apiKey;
+        this.baseApiUrl = baseApiUrl;
+    }
     
     /**
      * Take a HubApi URL, query it, and process the results 
@@ -29,16 +37,16 @@ public class ApiHelper {
      * @return
      * @throws LeadsException 
      */
-    public <T> List<T> readUrlToList(final String apiUrl, final Class<T> clazz) throws ApiHelperException {
-        if (Utils.isEmpty(apiUrl)) {
+    public <T> List<T> readUrlToList(final String apiPath, final Class<T> clazz) throws ApiHelperException {
+        if (Utils.isEmpty(apiPath)) {
             throw new IllegalArgumentException("Must include a non-blank api url to read results.");
         }
 
-        Log.d(LOG_TAG, apiUrl);
+        Log.d(LOG_TAG, apiPath);
         try {
-            return readApiJson(apiUrl, getHttpUtils().getReaderForUrl(apiUrl), clazz);
+            return readApiJson(apiPath, getHttpUtils().getReaderForUrl(getFullApiUrl(apiPath)), clazz);
         } catch (HttpUtilsException ex) {
-            throw new ApiHelperException(apiUrl, null, ex);
+            throw new ApiHelperException(getFullApiUrl(apiPath), null, ex);
         }
     }
 
@@ -62,6 +70,14 @@ public class ApiHelper {
         
     }
 
+    private String getFullApiUrl(final String apiPath) {
+        String queryString = String.format("?hapikey=%s", apiKey);
+        if (Utils.contains(apiPath, "?")) {
+            queryString = String.format("&hapikey=%s", apiKey);
+        }
+        return String.format("%s%s%s", baseApiUrl, apiPath, queryString);
+    }
+    
     private HttpUtils getHttpUtils() {
         if (httpUtils == null) {
             httpUtils = new HttpUtils();

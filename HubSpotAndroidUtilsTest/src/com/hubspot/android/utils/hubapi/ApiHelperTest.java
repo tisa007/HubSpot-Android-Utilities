@@ -8,7 +8,9 @@ import com.hubspot.android.utils.Utils;
 
 public class ApiHelperTest extends AndroidTestCase {
 
-    private static final String TEST_API_URL = "https://api.hubapi.com/leads/v1/list?hapikey=demo&max=10";
+    private static final String TEST_BASE_API_URL = "https://api.hubapi.com/leads/v1/";
+    private static final String TEST_API_PATH = "list?max=10";
+    private static final String TEST_API_KEY = "demo";
 
     private ApiHelper apiHelper;
 
@@ -25,7 +27,7 @@ public class ApiHelperTest extends AndroidTestCase {
 
         List<ApiCallbackTest> testResults = null;
         try {
-            testResults = apiHelper.readUrlToList(TEST_API_URL, ApiCallbackTest.class);
+            testResults = apiHelper.readUrlToList(TEST_API_PATH, ApiCallbackTest.class);
         } catch (ApiHelperException ex) {
             fail("Hit ApiHelperException when trying to get IllegalArgumentException.");
         }
@@ -39,6 +41,6 @@ public class ApiHelperTest extends AndroidTestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        apiHelper = new ApiHelper();
+        apiHelper = new ApiHelper(TEST_API_KEY, TEST_BASE_API_URL);
     }
 }

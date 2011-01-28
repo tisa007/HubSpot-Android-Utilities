@@ -31,6 +31,19 @@ public class Utils {
         return (string.length() == 0);
     }
 
+    /**
+     * Does the first string contain the search string? 
+     * @param str
+     * @param searchStr
+     * @return
+     */
+    public static boolean contains(final String str, final String searchStr) {
+        if (str == null || searchStr == null) {
+            return false;
+        }
+        return str.indexOf(searchStr) >= 0;
+    }
+    
 	/**
 	 * Get a string value from a cursor
 	 */
