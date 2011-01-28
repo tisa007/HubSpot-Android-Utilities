@@ -62,8 +62,7 @@ public class ApiHelperTest extends AndroidTestCase {
         }
         assertNotNull(thrownEx);
         assertTrue(((ApiHelperException) thrownEx).getCause() instanceof HttpUtilsException);
-        HttpUtilsException innerEx = (HttpUtilsException) ((ApiHelperException) thrownEx).getCause();
-        assertTrue(innerEx.getResponseCode() > 201);
+        assertTrue(((ApiHelperException)thrownEx).getResponseCode() > 201);
 
         testPutObj.authorEmail = "yshapira@hubspot.com";
         testPutObj.title = "Android ApiHelper Unit Test";
