@@ -3,6 +3,7 @@ package com.hubspot.android.utils.hubapi;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
+import java.util.Map;
 
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -29,7 +30,7 @@ public class ApiHelper {
      * @return
      * @throws LeadsException 
      */
-    public <T> List<T> readUrlToList(final String apiUrl) throws ApiHelperException {
+    public List<Map<String, Object>> readUrlToList(final String apiUrl) throws ApiHelperException {
         if (Utils.isEmpty(apiUrl)) {
             throw new IllegalArgumentException("Must include a non-blank api url to read results.");
         }
@@ -42,11 +43,10 @@ public class ApiHelper {
         }
     }
 
-    private <T> List<T> readApiJson(final String apiUrl, final Reader jsonReader) throws ApiHelperException {
-        List<T> objects = null;
+    private List<Map<String, Object>> readApiJson(final String apiUrl, final Reader jsonReader) throws ApiHelperException {
         try {
             mapper.configure(Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            objects = mapper.readValue(jsonReader, new TypeReference<List<T>>() {});
+            return mapper.readValue(jsonReader, new TypeReference<List>() {});
         } catch (JsonParseException jsonParseException) {
             Log.e(LOG_TAG, "Exception parsing JSON", jsonParseException);
             throw new ApiHelperException(apiUrl, "Couldn't parse JSON from API response.", jsonParseException);
@@ -56,9 +56,11 @@ public class ApiHelper {
         } catch (IOException ioException) {
             Log.e(LOG_TAG, "Exception retrieving response.", ioException);
             throw new ApiHelperException(apiUrl, "Couldn't read JSON, IOException when retrieving response.", ioException);
+        } catch(Exception ex) {
+            Log.e(LOG_TAG, "Exception retrieving response.", ex);
+            throw new ApiHelperException(apiUrl, "Couldn't read JSON, IOException when retrieving response.", ex);
         }
-
-        return objects;
+        
     }
 
     private HttpUtils getHttpUtils() {
