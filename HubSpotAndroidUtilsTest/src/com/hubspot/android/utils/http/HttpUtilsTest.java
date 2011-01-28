@@ -8,6 +8,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 
 import android.test.AndroidTestCase;
+import android.util.Log;
 
 import com.hubspot.android.utils.Utils;
 import com.hubspot.android.utils.mock.MockHttpClient;
@@ -15,12 +16,16 @@ import com.hubspot.android.utils.mock.MockHttpClient;
 public class HttpUtilsTest extends AndroidTestCase {
 
     private static final String TEST_API_URL = "https://api.hubapi.com/leads/v1/callback-url?hapikey=demo";
-    
+
+    private static final String TEST_PUT_API_URL = "https://hubapi.com/blog/v1/799e8ccc-d442-489e-b4fd-aea56256fa6b/create?hapikey=demo";
+
+    private static final String TEST_PUT_API_BODY = "{\"authorEmail\":\"yshapira@hubspot.com\",\"title\":\"Android Unit Test\",\"body\":\"This is a unit test from my android client.\"}";
+
     private HttpUtils httpUtils;
 
     protected void setUp() throws Exception {
         httpUtils = new HttpUtils();
-        httpUtils.setHttpClient(new MockHttpClient(false, false));
+        httpUtils.setHttpClient(new MockHttpClient(false, false, false));
     }
 
     public void testGet() {
@@ -42,7 +47,7 @@ public class HttpUtilsTest extends AndroidTestCase {
         }
         assertNotNull("Should have thrown an IllegalArgumentException", thrownEx);
 
-        httpUtils.setHttpClient(new MockHttpClient(true, false));
+        httpUtils.setHttpClient(new MockHttpClient(true, false, false));
         thrownEx = null;
         try {
             httpUtils.get(TEST_API_URL);
@@ -51,7 +56,7 @@ public class HttpUtilsTest extends AndroidTestCase {
         }
         assertNotNull("Should have thrown an HttpUtilsException.", thrownEx);
 
-        httpUtils.setHttpClient(new MockHttpClient(false, true));
+        httpUtils.setHttpClient(new MockHttpClient(false, true, false));
         thrownEx = null;
         try {
             httpUtils.get(TEST_API_URL);
@@ -59,6 +64,17 @@ public class HttpUtilsTest extends AndroidTestCase {
             thrownEx = e;
         }
         assertNotNull("Should have thrown an HttpUtilsException.", thrownEx);
+
+        httpUtils.setHttpClient(new MockHttpClient(false, false, true));
+        thrownEx = null;
+        try {
+            httpUtils.get(TEST_API_URL);
+        } catch (HttpUtilsException e) {
+            thrownEx = e;
+        }
+        assertNotNull("Should have thrown an HttpUtilsException.", thrownEx);
+        assertNotNull(((HttpUtilsException)thrownEx).getResponseCode());
+        assertTrue(((HttpUtilsException)thrownEx).getResponseCode() > 201);
     }
 
     public void testGetReaderForUrl() {
@@ -78,7 +94,7 @@ public class HttpUtilsTest extends AndroidTestCase {
         }
         assertNotNull("Should have thrown an IllegalArgumentException", thrownEx);
 
-        httpUtils.setHttpClient(new MockHttpClient(true, false));
+        httpUtils.setHttpClient(new MockHttpClient(true, false, false));
         thrownEx = null;
         try {
             httpUtils.getReaderForUrl(TEST_API_URL);
@@ -87,7 +103,7 @@ public class HttpUtilsTest extends AndroidTestCase {
         }
         assertNotNull("Should have thrown an HttpUtilsException.", thrownEx);
 
-        httpUtils.setHttpClient(new MockHttpClient(false, true));
+        httpUtils.setHttpClient(new MockHttpClient(false, true, false));
         thrownEx = null;
         try {
             httpUtils.getReaderForUrl(TEST_API_URL);
@@ -95,19 +111,29 @@ public class HttpUtilsTest extends AndroidTestCase {
             thrownEx = e;
         }
         assertNotNull("Should have thrown an HttpUtilsException.", thrownEx);
+        
+        httpUtils.setHttpClient(new MockHttpClient(false, false, true));
+        thrownEx = null;
+        try {
+            httpUtils.getReaderForUrl(TEST_API_URL);
+        } catch (HttpUtilsException e) {
+            thrownEx = e;
+        }
+        assertNotNull("Should have thrown an HttpUtilsException.", thrownEx);
+        assertNotNull(((HttpUtilsException)thrownEx).getResponseCode());
+        assertTrue(((HttpUtilsException)thrownEx).getResponseCode() > 201);
     }
 
-    public void testGetStreamFromConnection() {
-        HttpUriRequest request = new HttpGet(TEST_API_URL);
+    public void testGetReaderForPut() {
         try {
-            assertNotNull(httpUtils.getStreamFromConnection(request));
+            assertNotNull(httpUtils.getReaderForPut(TEST_PUT_API_URL, TEST_PUT_API_BODY));
         } catch (HttpUtilsException e) {
             fail("Hit exception when trying to run mock get.");
         }
 
         Exception thrownEx = null;
         try {
-            httpUtils.getStreamFromConnection(null);
+            httpUtils.getReaderForPut(null, null);
         } catch (IllegalArgumentException e) {
             thrownEx = e;
         } catch (Exception e) {
@@ -115,23 +141,130 @@ public class HttpUtilsTest extends AndroidTestCase {
         }
         assertNotNull("Should have thrown an IllegalArgumentException", thrownEx);
 
-        httpUtils.setHttpClient(new MockHttpClient(true, false));
+        httpUtils.setHttpClient(new MockHttpClient(true, false, false));
         thrownEx = null;
         try {
-            httpUtils.getStreamFromConnection(request);
+            httpUtils.getReaderForPut(TEST_PUT_API_URL, TEST_PUT_API_BODY);
         } catch (HttpUtilsException e) {
             thrownEx = e;
         }
         assertNotNull("Should have thrown an HttpUtilsException.", thrownEx);
 
-        httpUtils.setHttpClient(new MockHttpClient(false, true));
+        httpUtils.setHttpClient(new MockHttpClient(false, true, false));
         thrownEx = null;
         try {
-            httpUtils.getStreamFromConnection(request);
+            httpUtils.getReaderForPut(TEST_PUT_API_URL, TEST_PUT_API_BODY);
         } catch (HttpUtilsException e) {
             thrownEx = e;
         }
         assertNotNull("Should have thrown an HttpUtilsException.", thrownEx);
+        
+        httpUtils.setHttpClient(new MockHttpClient(false, false, true));
+        thrownEx = null;
+        try {
+            httpUtils.getReaderForPut(TEST_PUT_API_URL, TEST_PUT_API_BODY);
+        } catch (HttpUtilsException e) {
+            thrownEx = e;
+        }
+        assertNotNull("Should have thrown an HttpUtilsException.", thrownEx);
+        assertNotNull(((HttpUtilsException)thrownEx).getResponseCode());
+        assertTrue(((HttpUtilsException)thrownEx).getResponseCode() > 201);
+    }
+
+    public void testPut() {
+        try {
+            assertNotNull(httpUtils.put(TEST_PUT_API_URL, TEST_PUT_API_BODY));
+        } catch (HttpUtilsException e) {
+            fail("Hit exception when trying to run mock get.");
+        }
+
+        Exception thrownEx = null;
+        try {
+            httpUtils.put(null, null);
+        } catch (IllegalArgumentException e) {
+            thrownEx = e;
+        } catch (Exception e) {
+            fail("Hit exception when trying to run mock get.");
+        }
+        assertNotNull("Should have thrown an IllegalArgumentException", thrownEx);
+
+        httpUtils.setHttpClient(new MockHttpClient(true, false, false));
+        thrownEx = null;
+        try {
+            httpUtils.put(TEST_PUT_API_URL, TEST_PUT_API_BODY);
+        } catch (HttpUtilsException e) {
+            thrownEx = e;
+        }
+        assertNotNull("Should have thrown an HttpUtilsException.", thrownEx);
+
+        httpUtils.setHttpClient(new MockHttpClient(false, true, false));
+        thrownEx = null;
+        try {
+            httpUtils.put(TEST_PUT_API_URL, TEST_PUT_API_BODY);
+        } catch (HttpUtilsException e) {
+            thrownEx = e;
+        }
+        assertNotNull("Should have thrown an HttpUtilsException.", thrownEx);
+        
+        httpUtils.setHttpClient(new MockHttpClient(false, false, true));
+        thrownEx = null;
+        try {
+            httpUtils.put(TEST_PUT_API_URL, TEST_PUT_API_BODY);
+        } catch (HttpUtilsException e) {
+            thrownEx = e;
+        }
+        assertNotNull("Should have thrown an HttpUtilsException.", thrownEx);
+        assertNotNull(((HttpUtilsException)thrownEx).getResponseCode());
+        assertTrue(((HttpUtilsException)thrownEx).getResponseCode() > 201);
+    }
+
+    public void testGetStreamFromConnection() {
+        HttpUriRequest request = new HttpGet(TEST_API_URL);
+        try {
+            assertNotNull(httpUtils.getStreamFromRequest(request));
+        } catch (HttpUtilsException e) {
+            fail("Hit exception when trying to run mock get.");
+        }
+
+        Exception thrownEx = null;
+        try {
+            httpUtils.getStreamFromRequest(null);
+        } catch (IllegalArgumentException e) {
+            thrownEx = e;
+        } catch (Exception e) {
+            fail("Hit exception when trying to run mock get.");
+        }
+        assertNotNull("Should have thrown an IllegalArgumentException", thrownEx);
+
+        httpUtils.setHttpClient(new MockHttpClient(true, false, false));
+        thrownEx = null;
+        try {
+            httpUtils.getStreamFromRequest(request);
+        } catch (HttpUtilsException e) {
+            thrownEx = e;
+        }
+        assertNotNull("Should have thrown an HttpUtilsException.", thrownEx);
+
+        httpUtils.setHttpClient(new MockHttpClient(false, true, false));
+        thrownEx = null;
+        try {
+            httpUtils.getStreamFromRequest(request);
+        } catch (HttpUtilsException e) {
+            thrownEx = e;
+        }
+        assertNotNull("Should have thrown an HttpUtilsException.", thrownEx);
+
+        httpUtils.setHttpClient(new MockHttpClient(false, false, true));
+        thrownEx = null;
+        try {
+            httpUtils.getStreamFromRequest(request);
+        } catch (HttpUtilsException e) {
+            thrownEx = e;
+        }
+
+        assertNotNull("Should have thrown an HttpUtilsException.", thrownEx);
+        assertNotNull(((HttpUtilsException)thrownEx).getResponseCode());
+        assertTrue(((HttpUtilsException)thrownEx).getResponseCode() > 201);
     }
 
     public void testConvertStreamToString() {
@@ -149,7 +282,6 @@ public class HttpUtilsTest extends AndroidTestCase {
             fail("Hit exception when trying to run mock get.");
         }
 
-
         HttpUtilsException thrownEx = null;
         try {
             httpUtils.convertStreamToString(null);
@@ -157,11 +289,10 @@ public class HttpUtilsTest extends AndroidTestCase {
             thrownEx = ex;
         }
         assertNotNull(thrownEx);
-    
     }
 
     public void testRealGet() {
-        //Reset http client, allow for DefaultHttpClient instead of Mock.
+        // Reset http client, allow for DefaultHttpClient instead of Mock.
         httpUtils.setHttpClient(null);
         String response = null;
         try {
@@ -170,5 +301,18 @@ public class HttpUtilsTest extends AndroidTestCase {
             fail("Hit exception when trying to run real get.");
         }
         assertFalse(Utils.isEmpty(response));
+    }
+
+    public void testRealPut() {
+        // Reset http client, allow for DefaultHttpClient instead of Mock.
+        httpUtils.setHttpClient(null);
+        String response = null;
+        try {
+            response = httpUtils.put(TEST_PUT_API_URL, TEST_PUT_API_BODY);
+        } catch (HttpUtilsException e) {
+            fail("Hit exception when trying to run real get.");
+        }
+        assertFalse(Utils.isEmpty(response));
+        Log.i("hubspot.utils.http", response);
     }
 }

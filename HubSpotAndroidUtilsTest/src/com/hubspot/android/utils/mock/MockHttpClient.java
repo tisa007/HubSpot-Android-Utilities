@@ -17,33 +17,43 @@ public class MockHttpClient implements HttpClient {
 
     private boolean throwExceptions;
     private boolean returnEmpty;
-    
-    public MockHttpClient(final boolean throwExceptions, final boolean returnEmpty) {
+    private boolean returnErrors;
+
+    public MockHttpClient(final boolean throwExceptions, final boolean returnEmpty, final boolean returnErrors) {
         this.throwExceptions = throwExceptions;
         this.returnEmpty = returnEmpty;
+        this.returnErrors = returnErrors;
     }
 
     @Override
-    public HttpResponse execute(HttpUriRequest request)  throws IOException, ClientProtocolException{
-        if (throwExceptions) {
-            throw new IOException();
-        }
-        if (returnEmpty) {
-        return null;
-        }
-        return new MockHttpResponse();
+    public HttpResponse execute(HttpUriRequest request) throws IOException, ClientProtocolException {
+        return executeMockRequest();
     }
 
     @Override
     public HttpResponse execute(HttpHost target, HttpRequest request, HttpContext context) throws IOException,
             ClientProtocolException {
+        return executeMockRequest();
+    }
+
+    /**
+     * Run real work of returning errors, throwing exceptions, etc.
+     * 
+     * @return
+     * @throws IOException
+     */
+    private HttpResponse executeMockRequest() throws IOException {
         if (throwExceptions) {
             throw new IOException();
         }
         if (returnEmpty) {
-        return null;
+            return null;
         }
-        return new MockHttpResponse();
+        if (returnErrors) {
+            return new MockHttpResponse(500);
+        }
+        return new MockHttpResponse(201);
+
     }
 
     @Override

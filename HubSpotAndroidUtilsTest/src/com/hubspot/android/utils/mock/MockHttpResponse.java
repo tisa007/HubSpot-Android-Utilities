@@ -8,10 +8,17 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.ProtocolVersion;
 import org.apache.http.StatusLine;
+import org.apache.http.message.BasicStatusLine;
 import org.apache.http.params.HttpParams;
 
 public class MockHttpResponse implements HttpResponse {
 
+    private int returnedStatus;
+    
+    public MockHttpResponse(final int returnedStatus) {
+        this.returnedStatus = returnedStatus;
+    }
+    
     @Override
     public HttpEntity getEntity() {
         return new MockHttpEntity();
@@ -25,8 +32,7 @@ public class MockHttpResponse implements HttpResponse {
 
     @Override
     public StatusLine getStatusLine() {
-        // TODO Auto-generated method stub
-        return null;
+        return new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), returnedStatus, "MOCK TEST");
     }
 
     @Override

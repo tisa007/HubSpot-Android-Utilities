@@ -12,7 +12,9 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.util.Log;
@@ -29,6 +31,7 @@ public class HttpUtils {
 
     /**
      * Retrieve the contents of a url as a Reader.
+     * 
      * @param url
      * @return
      * @throws HttpUtilsException
@@ -38,9 +41,9 @@ public class HttpUtils {
             throw new IllegalArgumentException("Url must not be null or empty to run GET request.");
         }
 
-        HttpGet conn = new HttpGet(url);
+        HttpGet httpGet = new HttpGet(url);
         try {
-            return new BufferedReader(new InputStreamReader(getStreamFromConnection(conn), "UTF-8"));
+            return new BufferedReader(new InputStreamReader(getStreamFromRequest(httpGet), "UTF-8"));
         } catch (UnsupportedEncodingException e) {
             String message = String.format("Unsupported encoding for response stream when calling %s", url);
             Log.e(LOG_TAG, message, e);
@@ -50,6 +53,7 @@ public class HttpUtils {
 
     /**
      * Retrieve the contents of a url as a string.
+     * 
      * @param url
      * @return
      * @throws HttpUtilsException
@@ -60,7 +64,59 @@ public class HttpUtils {
         }
 
         HttpGet httpGet = new HttpGet(url);
-        return convertStreamToString(getStreamFromConnection(httpGet));
+        return convertStreamToString(getStreamFromRequest(httpGet));
+    }
+
+    /**
+     * Retrieve the contents of a url as a Reader.
+     * 
+     * @param url
+     * @return
+     * @throws HttpUtilsException
+     */
+    public Reader getReaderForPut(final String url, final String putBody) throws HttpUtilsException {
+        HttpPut httpPut = createHttpPutRequest(url, putBody);
+        try {
+            return new BufferedReader(new InputStreamReader(getStreamFromRequest(httpPut), "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            String message = String.format("Unsupported encoding for response stream when calling %s", url);
+            Log.e(LOG_TAG, message, e);
+            throw new HttpUtilsException(message, e);
+        }
+    }
+
+    /**
+     * Retrieve the contents of a response for a PUT request on the given URL with the given body contents.
+     * 
+     * @param url
+     * @param putBody
+     * @return
+     * @throws HttpUtilsException
+     */
+    public String put(final String url, final String putBody) throws HttpUtilsException {
+        HttpPut httpPut = createHttpPutRequest(url, putBody);
+        return convertStreamToString(getStreamFromRequest(httpPut));
+    }
+
+    private HttpPut createHttpPutRequest(final String url, final String putBody) throws HttpUtilsException {
+        if (Utils.isEmpty(url)) {
+            throw new IllegalArgumentException("Url must not be null or empty to run PUT request.");
+        }
+
+        if (Utils.isEmpty(putBody)) {
+            throw new IllegalArgumentException("Put body must not be null or empty to run PUT request.");
+        }
+
+        HttpPut httpPut = new HttpPut(url);
+        httpPut.setHeader("Content-type", "application/json");
+        ByteArrayEntity putEntity;
+        try {
+            putEntity = new ByteArrayEntity(putBody.getBytes("UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            throw new HttpUtilsException("Unsupported encoding for PUT body.", e);
+        }
+        httpPut.setEntity(putEntity);
+        return httpPut;
     }
 
     /**
@@ -70,7 +126,8 @@ public class HttpUtils {
      * @return
      * @throws HttpUtilsException
      */
-    protected InputStream getStreamFromConnection(final HttpUriRequest connection) throws HttpUtilsException {
+    protected InputStream getStreamFromRequest(final HttpUriRequest connection) throws HttpUtilsException {
+        // TODO: try to get params out of request for exception logging.
         if (connection == null) {
             throw new IllegalArgumentException("Can't get response stream from null HttpUriRequest");
         }
@@ -79,6 +136,10 @@ public class HttpUtils {
         try {
             HttpResponse response = getHttpClient().execute(connection);
             if (response != null) {
+                if (response.getStatusLine().getStatusCode() != 200 && response.getStatusLine().getStatusCode() != 201) {
+                    throw new HttpUtilsException(connection.getURI().toString(), connection.getMethod(), response
+                            .getStatusLine().getStatusCode(), null);
+                }
                 entity = response.getEntity();
                 return entity.getContent();
             }
@@ -92,7 +153,8 @@ public class HttpUtils {
                     Log.w(LOG_TAG, ioException2);
                 }
             }
-            throw new HttpUtilsException(connection.getURI().toString(), connection.getMethod(), null, ioException);
+            throw new HttpUtilsException(connection.getURI().toString(), connection.getMethod(), null, null,
+                    ioException);
         }
     }
 
@@ -138,7 +200,7 @@ public class HttpUtils {
         }
         return httpClient;
     }
-    
+
     protected void setHttpClient(HttpClient httpClient) {
         this.httpClient = httpClient;
     }
