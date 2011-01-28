@@ -9,9 +9,9 @@ import com.hubspot.android.utils.Utils;
 public class ApiHelperTest extends AndroidTestCase {
 
     private static final String TEST_API_URL = "https://api.hubapi.com/leads/v1/list?hapikey=demo&max=10";
-    
+
     private ApiHelper apiHelper;
-    
+
     public void testReadUrlToList() {
         Exception thrownEx = null;
         try {
@@ -31,7 +31,7 @@ public class ApiHelperTest extends AndroidTestCase {
         }
         assertNotNull(testResults);
 
-        for(ApiCallbackTest testResult : testResults) {
+        for (ApiCallbackTest testResult : testResults) {
             assertFalse(Utils.isEmpty(testResult.guid));
         }
     }
