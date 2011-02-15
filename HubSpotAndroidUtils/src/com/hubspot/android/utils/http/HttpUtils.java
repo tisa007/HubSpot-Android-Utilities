@@ -12,6 +12,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.ByteArrayEntity;
@@ -120,6 +121,60 @@ public class HttpUtils {
         return httpPut;
     }
 
+    
+    /**
+     * Retrieve the contents of a url as a Reader.
+     * 
+     * @param url
+     * @return
+     * @throws HttpUtilsException
+     */
+    public Reader getReaderForPost(final String url, final String postBody) throws HttpUtilsException {
+        HttpPost httpPost = createHttpPostRequest(url, postBody);
+        try {
+            return new BufferedReader(new InputStreamReader(getStreamFromRequest(httpPost), "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            String message = String.format("Unsupported encoding for response stream when calling %s", url);
+            Log.e(LOG_TAG, message, e);
+            throw new HttpUtilsException(message, e);
+        }
+    }
+
+    /**
+     * Retrieve the contents of a response for a POST request on the given URL with the given body contents.
+     * 
+     * @param url
+     * @param postBody
+     * @return
+     * @throws HttpUtilsException
+     */
+    public String post(final String url, final String postBody) throws HttpUtilsException {
+        HttpPost httpPost = createHttpPostRequest(url, postBody);
+        return convertStreamToString(getStreamFromRequest(httpPost));
+    }
+
+    private HttpPost createHttpPostRequest(final String url, final String postBody) throws HttpUtilsException {
+        if (Utils.isEmpty(url)) {
+            throw new IllegalArgumentException("Url must not be null or empty to run POST request.");
+        }
+
+        if (Utils.isEmpty(postBody)) {
+            throw new IllegalArgumentException("Post body must not be null or empty to run POST request.");
+        }
+
+        HttpPost httpPost = new HttpPost(url);
+        //TODO: make this support non-JSON types.
+        httpPost.setHeader("Content-type", "application/json");
+        ByteArrayEntity postEntity;
+        try {
+            postEntity = new ByteArrayEntity(postBody.getBytes("UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            throw new HttpUtilsException("Unsupported encoding for POST body.", e);
+        }
+        httpPost.setEntity(postEntity);
+        return httpPost;
+    }
+    
     /**
      * Create an InputStream from a HttpUriRequest.
      * 

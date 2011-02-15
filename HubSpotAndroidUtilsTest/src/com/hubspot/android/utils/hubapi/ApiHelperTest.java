@@ -13,7 +13,7 @@ public class ApiHelperTest extends AndroidTestCase {
     private static final String TEST_API_PATH = "list?max=10";
     private static final String TEST_API_KEY = "demo";
 
-    private static final String TEST_PUT_API_PATH = "799e8ccc-d442-489e-b4fd-aea56256fa6b/create";
+    private static final String TEST_CREATE_API_PATH = "799e8ccc-d442-489e-b4fd-aea56256fa6b/posts.json";
 
     private ApiHelper apiHelper;
 
@@ -56,7 +56,7 @@ public class ApiHelperTest extends AndroidTestCase {
 
         thrownEx = null;
         try {
-            apiHelper.postNewApiObject(TEST_PUT_API_PATH, testPutObj);
+            apiHelper.postNewApiObject(TEST_CREATE_API_PATH, testPutObj);
         } catch (ApiHelperException ex) {
             thrownEx = ex;
         }
@@ -70,7 +70,7 @@ public class ApiHelperTest extends AndroidTestCase {
 
         ApiCallbackTest testResult = null;
         try {
-            testResult = (ApiCallbackTest) apiHelper.postNewApiObject(TEST_PUT_API_PATH, testPutObj);
+            testResult = (ApiCallbackTest) apiHelper.postNewApiObject(TEST_CREATE_API_PATH, testPutObj);
         } catch (ApiHelperException ex) {
             fail("Hit ApiHelperException when trying to get post new object.");
         }

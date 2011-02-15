@@ -43,10 +43,10 @@ public class ApiHelper {
 
         Log.d(LOG_TAG, apiPath);
         try {
-            return (T) readApiJsonToObject(apiPath, getHttpUtils().getReaderForPut(getFullApiUrl(apiPath), mapper.writeValueAsString(object)), object.getClass());
+            return (T) readApiJsonToObject(apiPath, getHttpUtils().getReaderForPost(getFullApiUrl(apiPath), mapper.writeValueAsString(object)), object.getClass());
         } catch (HttpUtilsException ex) {
             if (ex.getResponseCode() != null) {
-                Log.e(LOG_TAG, "Got " + ex.getResponseCode() + " response from PUT request.", ex);
+                Log.e(LOG_TAG, "Got " + ex.getResponseCode() + " response from POST request.", ex);
             }
             throw new ApiHelperException(getFullApiUrl(apiPath), null, ex);
         } catch (ApiHelperException ex) {
