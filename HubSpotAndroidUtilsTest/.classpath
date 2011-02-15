@@ -4,7 +4,7 @@
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="src" path="HubSpotAndroidUtils_src"/>
-	<classpathentry kind="lib" path="/HubSpotLeads/jackson-mapper-asl-1.5.4.jar" sourcepath="/HubSpotLeads/C:/Users/Owen/workspace/jackson-mapper-1.5.4"/>
-	<classpathentry kind="lib" path="/HubSpotLeads/jackson-core-asl-1.5.4.jar" sourcepath="/HubSpotLeads/C:/Users/Owen/workspace/jackson-mapper-1.5.4"/>
+	<classpathentry kind="lib" path="/HubSpotAndroidUtils/jackson-core-asl-1.5.4.jar"/>
+	<classpathentry kind="lib" path="/HubSpotAndroidUtils/jackson-mapper-asl-1.5.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
