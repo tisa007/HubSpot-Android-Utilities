@@ -17,11 +17,11 @@ public class HttpUtilsTest extends AndroidTestCase {
 
     private static final String TEST_API_URL = "https://api.hubapi.com/leads/v1/callback-url?hapikey=demo";
 
-    private static final String TEST_PUT_API_URL = "https://hubapi.com/blog/v1/posts/e507cc27-2e7d-4799-8665-78cb361b9175.json?hapikey=demo";
+    private static final String TEST_PUT_API_URL = "https://api.hubapi.com/blog/v1/posts/e507cc27-2e7d-4799-8665-78cb361b9175.json?hapikey=demo";
 
     private static final String TEST_PUT_API_BODY = "{\"body\":\"This is a unit test from my android client modified at: " + System.currentTimeMillis() + ".\"}";
 
-    private static final String TEST_POST_API_URL = "https://hubapi.com/blog/v1/799e8ccc-d442-489e-b4fd-aea56256fa6b/posts.json?hapikey=demo";
+    private static final String TEST_POST_API_URL = "https://api.hubapi.com/blog/v1/799e8ccc-d442-489e-b4fd-aea56256fa6b/posts.json?hapikey=demo";
 
     private static final String TEST_POST_API_BODY = "{\"authorEmail\":\"yshapira@hubspot.com\",\"title\":\"Android Unit Test\",\"body\":\"This is a unit test from my android client.\"}";
 
