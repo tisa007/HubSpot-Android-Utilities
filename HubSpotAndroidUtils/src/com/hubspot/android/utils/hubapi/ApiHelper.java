@@ -32,6 +32,7 @@ public class ApiHelper {
     }
 
     
+    @SuppressWarnings("unchecked")
     public <T> T postNewApiObject(final String apiPath, final T object) throws ApiHelperException {
         if (Utils.isEmpty(apiPath)) {
             throw new IllegalArgumentException("Must include a non-blank api url to create object via api.");
