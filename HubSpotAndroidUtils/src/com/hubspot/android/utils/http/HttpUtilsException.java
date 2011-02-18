@@ -30,7 +30,7 @@ public class HttpUtilsException extends Exception {
 
     public HttpUtilsException(final String url, final String method, final Integer responseCode, final Map<String, Object> params,
             final Throwable cause) {
-        super(String.format("Error making %s request to '%s'", url, method), cause);
+        super(String.format("Error making %s request to '%s'", method, url), cause);
         this.url = url;
         this.method = method;
         this.responseCode = responseCode;
