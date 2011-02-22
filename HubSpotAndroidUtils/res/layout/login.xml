@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent" android:orientation="vertical" android:layout_marginLeft="10sp" android:layout_marginRight="10sp" android:layout_gravity="clip_horizontal">
+    <TextView android:id="@+id/signInLabel" android:layout_height="wrap_content" android:text="@string/signInLabel" android:textSize="30sp" android:layout_gravity="center" android:layout_width="wrap_content" android:layout_margin="15sp"></TextView>
+    <EditText android:layout_height="wrap_content" android:id="@+id/username" android:hint="@string/usernameLabel" android:layout_width="fill_parent" android:textSize="20sp" android:layout_marginTop="5sp" android:singleLine="true"></EditText>
+    <EditText android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/password" android:hint="@string/passwordLabel" android:textSize="20sp" android:layout_marginTop="5sp" android:singleLine="true" android:password="true"></EditText>
+    <Button android:id="@+id/signInButton" android:layout_height="wrap_content" android:layout_width="fill_parent" android:text="@string/signInButton" android:textSize="22sp" android:layout_marginTop="15sp"></Button>
+</LinearLayout>

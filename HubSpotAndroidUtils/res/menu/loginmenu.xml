@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/portalId" android:title="@string/setPortalId"></item>
+    <item android:id="@+id/apiKey" android:title="@string/apiKey"></item>
+    <item android:id="@+id/showPassword" android:title="@string/showPassword"></item>
+</menu>

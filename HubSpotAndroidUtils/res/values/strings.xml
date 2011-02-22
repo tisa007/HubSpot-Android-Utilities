@@ -2,4 +2,12 @@
 <resources>
     <string name="hello">Hello World!</string>
     <string name="app_name">HubSpot Android Utils</string>
+    <string name="usernameLabel">Username</string>
+    <string name="passwordLabel">Password</string>
+    <string name="signInLabel">Sign in to HubSpot</string>
+    <string name="signInButton">Sign In</string>
+    <string name="setPortalId">Set Portal ID</string>
+    <string name="apiKey">Input API Key</string>
+    <string name="showPassword">Show Password</string>
+    <string name="hidePassword">Hide Password</string>
 </resources>
