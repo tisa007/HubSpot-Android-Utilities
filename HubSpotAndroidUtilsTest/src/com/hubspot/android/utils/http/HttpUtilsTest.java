@@ -6,20 +6,24 @@ import java.io.UnsupportedEncodingException;
 
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.DeserializationConfig.Feature;
+import org.codehaus.jackson.map.type.TypeFactory;
 
 import android.test.AndroidTestCase;
 import android.util.Log;
 
 import com.hubspot.android.utils.Utils;
+import com.hubspot.android.utils.hubapi.ApiCallbackTest;
 import com.hubspot.android.utils.mock.MockHttpClient;
 
 public class HttpUtilsTest extends AndroidTestCase {
 
     private static final String TEST_API_URL = "https://api.hubapi.com/leads/v1/callback-url?hapikey=demo";
 
-    private static final String TEST_PUT_API_URL = "https://api.hubapi.com/blog/v1/posts/e507cc27-2e7d-4799-8665-78cb361b9175.json?hapikey=demo";
+    private static final String TEST_PUT_API_URL = "https://api.hubapi.com/blog/v1/posts/ae869ae5-3603-4075-b24f-c57b44931592.json?hapikey=demo";
 
-    private static final String TEST_PUT_API_BODY = "{\"body\":\"This is a unit test from my android client modified at: " + System.currentTimeMillis() + ".\"}";
+    private static final String TEST_PUT_API_BODY = "This is a unit test from my android client modified at: " + System.currentTimeMillis() + ".";
 
     private static final String TEST_POST_API_URL = "https://api.hubapi.com/blog/v1/799e8ccc-d442-489e-b4fd-aea56256fa6b/posts.json?hapikey=demo";
 
@@ -418,10 +422,27 @@ public class HttpUtilsTest extends AndroidTestCase {
         // Reset http client, allow for DefaultHttpClient instead of Mock.
         httpUtils.setHttpClient(null);
         String response = null;
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
         try {
+            String getResponse = httpUtils.get(TEST_PUT_API_URL);
+            ApiCallbackTest originalPost = mapper.readValue(getResponse, TypeFactory.type(ApiCallbackTest.class));
+
+            //Actually execute update:
             response = httpUtils.put(TEST_PUT_API_URL, TEST_PUT_API_BODY);
-        } catch (HttpUtilsException e) {
-            fail("Hit exception when trying to run real get.");
+
+            //Verify update:
+            getResponse = httpUtils.get(TEST_PUT_API_URL);
+            ApiCallbackTest updatedPost = mapper.readValue(getResponse, TypeFactory.type(ApiCallbackTest.class));
+            assertEquals(TEST_PUT_API_BODY, updatedPost.body);
+            
+            //Revert update:
+            httpUtils.put(TEST_PUT_API_URL, originalPost.body);
+        } catch (Exception ex) {
+            String message = "Hit exception when trying to run real put.";
+            Log.e(HttpUtils.LOG_TAG, message, ex);
+            fail(message);
         }
         Log.i("hubspot.utils.http", response);
     }

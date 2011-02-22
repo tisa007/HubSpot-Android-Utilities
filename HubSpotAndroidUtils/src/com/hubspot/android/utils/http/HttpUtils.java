@@ -28,7 +28,7 @@ import com.hubspot.android.utils.Utils;
 public class HttpUtils implements IHttpUtils {
     private HttpClient httpClient;
 
-    private final String LOG_TAG = "hubspot.utils";
+    protected static final String LOG_TAG = "hubspot.utils";
 
     /* (non-Javadoc)
      * @see com.hubspot.android.utils.http.IHttpUtils#getReaderForUrl(java.lang.String)

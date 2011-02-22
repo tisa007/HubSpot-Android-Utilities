@@ -58,6 +58,19 @@ public class ApiHelper {
             throw new ApiHelperException(getFullApiUrl(apiPath), null, ex);
         }
     }
+
+    public <T> T readUrlToObject(final String apiPath, final Class<T> clazz) throws ApiHelperException {
+        if (Utils.isEmpty(apiPath)) {
+            throw new IllegalArgumentException("Must include a non-blank api url to read results.");
+        }
+
+        Log.d(LOG_TAG, apiPath);
+        try {
+            return readApiJsonToObject(apiPath, getHttpUtils().getReaderForUrl(getFullApiUrl(apiPath)), clazz);
+        } catch (HttpUtilsException ex) {
+            throw new ApiHelperException(getFullApiUrl(apiPath), null, ex);
+        }
+    }
     
     private <T> T readApiJsonToObject(final String apiUrl, final Reader jsonReader, final Class<T> clazz) throws ApiHelperException {
         try {
