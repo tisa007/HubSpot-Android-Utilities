@@ -25,17 +25,13 @@ import com.hubspot.android.utils.Utils;
 /**
  * A set of utilities for retrieving and uploading data via HTTP requests.
  */
-public class HttpUtils {
+public class HttpUtils implements IHttpUtils {
     private HttpClient httpClient;
 
     private final String LOG_TAG = "hubspot.utils";
 
-    /**
-     * Retrieve the contents of a url as a Reader.
-     * 
-     * @param url
-     * @return
-     * @throws HttpUtilsException
+    /* (non-Javadoc)
+     * @see com.hubspot.android.utils.http.IHttpUtils#getReaderForUrl(java.lang.String)
      */
     public Reader getReaderForUrl(final String url) throws HttpUtilsException {
         if (Utils.isEmpty(url)) {
@@ -52,12 +48,8 @@ public class HttpUtils {
         }
     }
 
-    /**
-     * Retrieve the contents of a url as a string.
-     * 
-     * @param url
-     * @return
-     * @throws HttpUtilsException
+    /* (non-Javadoc)
+     * @see com.hubspot.android.utils.http.IHttpUtils#get(java.lang.String)
      */
     public String get(final String url) throws HttpUtilsException {
         if (Utils.isEmpty(url)) {
@@ -68,12 +60,8 @@ public class HttpUtils {
         return convertStreamToString(getStreamFromRequest(httpGet));
     }
 
-    /**
-     * Retrieve the contents of a url as a Reader.
-     * 
-     * @param url
-     * @return
-     * @throws HttpUtilsException
+    /* (non-Javadoc)
+     * @see com.hubspot.android.utils.http.IHttpUtils#getReaderForPut(java.lang.String, java.lang.String)
      */
     public Reader getReaderForPut(final String url, final String putBody) throws HttpUtilsException {
         HttpPut httpPut = createHttpPutRequest(url, putBody);
@@ -86,13 +74,8 @@ public class HttpUtils {
         }
     }
 
-    /**
-     * Retrieve the contents of a response for a PUT request on the given URL with the given body contents.
-     * 
-     * @param url
-     * @param putBody
-     * @return
-     * @throws HttpUtilsException
+    /* (non-Javadoc)
+     * @see com.hubspot.android.utils.http.IHttpUtils#put(java.lang.String, java.lang.String)
      */
     public String put(final String url, final String putBody) throws HttpUtilsException {
         HttpPut httpPut = createHttpPutRequest(url, putBody);
@@ -122,12 +105,8 @@ public class HttpUtils {
     }
 
     
-    /**
-     * Retrieve the contents of a url as a Reader.
-     * 
-     * @param url
-     * @return
-     * @throws HttpUtilsException
+    /* (non-Javadoc)
+     * @see com.hubspot.android.utils.http.IHttpUtils#getReaderForPost(java.lang.String, java.lang.String)
      */
     public Reader getReaderForPost(final String url, final String postBody) throws HttpUtilsException {
         HttpPost httpPost = createHttpPostRequest(url, postBody);
@@ -140,13 +119,8 @@ public class HttpUtils {
         }
     }
 
-    /**
-     * Retrieve the contents of a response for a POST request on the given URL with the given body contents.
-     * 
-     * @param url
-     * @param postBody
-     * @return
-     * @throws HttpUtilsException
+    /* (non-Javadoc)
+     * @see com.hubspot.android.utils.http.IHttpUtils#post(java.lang.String, java.lang.String)
      */
     public String post(final String url, final String postBody) throws HttpUtilsException {
         HttpPost httpPost = createHttpPostRequest(url, postBody);

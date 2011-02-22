@@ -15,13 +15,14 @@ import android.util.Log;
 import com.hubspot.android.utils.Utils;
 import com.hubspot.android.utils.http.HttpUtils;
 import com.hubspot.android.utils.http.HttpUtilsException;
+import com.hubspot.android.utils.http.IHttpUtils;
 
 public class ApiHelper {
 
     private static final String LOG_TAG = "hubspot.utils.hapi";
 
     private static final ObjectMapper mapper = new ObjectMapper();
-    private HttpUtils httpUtils;
+    private IHttpUtils httpUtils;
 
     private final String apiKey;
     private final String baseApiUrl;
@@ -124,14 +125,14 @@ public class ApiHelper {
         return String.format("%s%s%s", baseApiUrl, apiPath, queryString);
     }
     
-    private HttpUtils getHttpUtils() {
+    private IHttpUtils getHttpUtils() {
         if (httpUtils == null) {
             httpUtils = new HttpUtils();
         }
         return httpUtils;
     }
 
-    protected void setHttpUtils(HttpUtils httpUtils) {
+    protected void setHttpUtils(IHttpUtils httpUtils) {
         this.httpUtils = httpUtils;
     }
 }
