@@ -1,7 +1,6 @@
 package com.hubspot.android.utils.activities;
 
 import android.app.AlertDialog.Builder;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
@@ -29,6 +28,11 @@ public class LoginActivity extends DefaultActivity {
      */
     public static final String API_KEY_EXTRA_NAME = "apiKey";
 
+    //Activity Result/Request Constants
+    public static final int RESULT_LOGIN_SUCCESS = 1;
+    public static final int RESULT_LOGIN_FAIL = 0;
+    public static final int REQUEST_AUTHENTICATE_USER = 1;
+    
     /** The portal ID to log in to (advanced) */
     private Long portalId;
 
