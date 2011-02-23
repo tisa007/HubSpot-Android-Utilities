@@ -20,6 +20,7 @@ import com.hubspot.android.utils.http.IHttpUtils;
 public class ApiHelper {
 
     private static final String LOG_TAG = "hubspot.utils.hapi";
+    public static final String DEFAULT_BASE_URL = "https://api.hubapi.com";
 
     private static final ObjectMapper mapper = new ObjectMapper();
     private IHttpUtils httpUtils;
@@ -29,7 +30,11 @@ public class ApiHelper {
     
     public ApiHelper(final String apiKey, final String baseApiUrl) {
         this.apiKey = apiKey;
-        this.baseApiUrl = baseApiUrl;
+        if (baseApiUrl.endsWith("/")) {
+            this.baseApiUrl = baseApiUrl.substring(0, baseApiUrl.length() - 1);
+        } else {
+            this.baseApiUrl = baseApiUrl;
+        }
     }
 
     
@@ -130,12 +135,24 @@ public class ApiHelper {
         
     }
 
-    private String getFullApiUrl(final String apiPath) {
-        String queryString = String.format("?hapikey=%s", apiKey);
+    /**
+     * Public for unit tests
+     * 
+     * Converts an API path to a full URL with its API key attached 
+     */
+    public String getFullApiUrl(final String apiPath) {
+        final String queryString;
         if (Utils.contains(apiPath, "?")) {
             queryString = String.format("&hapikey=%s", apiKey);
+        } else {
+            queryString = String.format("?hapikey=%s", apiKey);
         }
-        return String.format("%s%s%s", baseApiUrl, apiPath, queryString);
+        
+        if (apiPath.startsWith("/")) {
+            return String.format("%s%s%s", baseApiUrl, apiPath, queryString);
+        } else {
+            return String.format("%s/%s%s", baseApiUrl, apiPath, queryString);
+        }
     }
     
     private IHttpUtils getHttpUtils() {

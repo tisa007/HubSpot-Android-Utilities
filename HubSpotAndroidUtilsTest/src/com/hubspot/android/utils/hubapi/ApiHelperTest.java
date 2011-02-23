@@ -104,6 +104,19 @@ public class ApiHelperTest extends AndroidTestCase {
         assertNotNull(testResult);
         assertFalse(Utils.isEmpty(testResult.guid));
     }
+    
+    public void testUrlCleanup() {
+        final String apiKey = TEST_API_KEY;
+        final String expected = "http://api.com/path?hapikey=" + TEST_API_KEY;
+        
+        ApiHelper helper = new ApiHelper(apiKey, "http://api.com");
+        assertEquals(expected, helper.getFullApiUrl("path"));
+        assertEquals(expected, helper.getFullApiUrl("/path"));
+        
+        helper = new ApiHelper(apiKey, "http://api.com/");
+        assertEquals(expected, helper.getFullApiUrl("path"));
+        assertEquals(expected, helper.getFullApiUrl("/path"));
+    }
 
     public void testUpdateApiObject() {
         
