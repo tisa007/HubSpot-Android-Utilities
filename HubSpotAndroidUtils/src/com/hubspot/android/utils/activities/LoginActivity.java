@@ -18,15 +18,15 @@ import com.hubspot.android.utils.hubapi.ApiKeyHelper;
 import com.hubspot.android.utils.hubapi.ApiKeyHelperException;
 
 public class LoginActivity extends DefaultActivity {
-    /** 
-     * Pass the return intent string through the LoginActivity's intent with this key 
-     */
-    public static final String RETURN_INTENT_EXTRA_NAME = "returnIntent";
-    
     /**
-     * Returns the api key through the intent extras with this key 
+     * Name of the API key in the returned intent's extras  
      */
     public static final String API_KEY_EXTRA_NAME = "apiKey";
+    
+    /**
+     * Name of the logged in user in the returned intent's extras
+     */
+    public static final String USERNAME_EXTRA_NAME = "username";
 
     //Activity Result/Request Constants
     public static final int RESULT_LOGIN_SUCCESS = 1;
@@ -84,6 +84,7 @@ public class LoginActivity extends DefaultActivity {
     }
 
     private boolean showingPassword = false;
+
     private void toggleShowPassword() {
         showingPassword = !showingPassword;
         updatePasswordVisibility();
@@ -99,9 +100,12 @@ public class LoginActivity extends DefaultActivity {
         ((EditText)findViewById(R.id.password)).setTransformationMethod(method);
     }
 
-    private void saveApiKey(final CharSequence apiKey) {
+    private void saveApiKey(final CharSequence apiKey, final CharSequence username) {
         Intent intent = new Intent();
         intent.putExtra(API_KEY_EXTRA_NAME, apiKey);
+        if (!Utils.isEmpty(username)) {
+            intent.putExtra(USERNAME_EXTRA_NAME, username);
+        }
         setResult(RESULT_OK, intent);
         finish();
     }
@@ -118,6 +122,7 @@ public class LoginActivity extends DefaultActivity {
             input.setHint(hint);
         }
         alert.setView(input);
+        clickListener.setInput(input);
         
         alert.setPositiveButton(okButtonText, clickListener);
         alert.show();
@@ -167,22 +172,21 @@ public class LoginActivity extends DefaultActivity {
                 }
                 
                 toast("API key saved");
-                saveApiKey(response);
+                saveApiKey(response, null);
             }
         };
         
-        modalInput("Choose a Portal", "If you need to use a specific portal, input its ID", "Portal ID", "Set", listener);
+        modalInput("Set API Key", "You can input a HubSpot API key directly if you'd rather not log in", "API Key", "Set", listener);
     }
 
     /** Sign in to HubSpot and get the user's API key */
     public void signInClick() {
         final ApiKeyHelper helper = new ApiKeyHelper(new HttpUtils());
-        
         final CharSequence username = ((EditText)findViewById(R.id.username)).getText();
         final CharSequence password = ((EditText)findViewById(R.id.password)).getText();
         
         try {
-            saveApiKey(helper.requestApiKey(username, password, portalId));
+            saveApiKey(helper.requestApiKey(username, password, portalId), username);
         } catch (ApiKeyHelperException apiKeyHelperException) {
             toast("Error logging in: " + apiKeyHelperException.getLocalizedMessage());
         }
