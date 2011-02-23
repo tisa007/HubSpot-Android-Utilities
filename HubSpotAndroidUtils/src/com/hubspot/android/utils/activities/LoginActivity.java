@@ -114,6 +114,7 @@ public class LoginActivity extends DefaultActivity {
             input.setHint(hint);
         }
         alert.setView(input);
+        clickListener.setInput(input);
         
         alert.setPositiveButton(okButtonText, clickListener);
         alert.show();
@@ -167,7 +168,7 @@ public class LoginActivity extends DefaultActivity {
             }
         };
         
-        modalInput("Choose a Portal", "If you need to use a specific portal, input its ID", "Portal ID", "Set", listener);
+        modalInput("Set API Key", "You can input a HubSpot API key directly if you'd rather not log in", "API Key", "Set", listener);
     }
 
     /** Sign in to HubSpot and get the user's API key */
