@@ -29,7 +29,7 @@ public class LoginActivity extends DefaultActivity {
     public static final String USERNAME_EXTRA_NAME = "username";
 
     //Activity Result/Request Constants
-    public static final int RESULT_LOGIN_SUCCESS = 1;
+    public static final int RESULT_LOGIN_SUCCESS = -1;
     public static final int RESULT_LOGIN_FAIL = 0;
     public static final int REQUEST_AUTHENTICATE_USER = 1;
     
