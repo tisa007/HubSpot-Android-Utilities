@@ -1,5 +1,6 @@
 package com.hubspot.android.utils.activities;
 
+import android.app.ProgressDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Intent;
 import android.os.Bundle;
@@ -36,6 +37,8 @@ public class LoginActivity extends DefaultActivity {
     /** The portal ID to log in to (advanced) */
     private Long portalId;
 
+    private ProgressDialog loginProgress;
+    
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         setContentView(R.layout.login);
@@ -107,6 +110,9 @@ public class LoginActivity extends DefaultActivity {
             intent.putExtra(USERNAME_EXTRA_NAME, username);
         }
         setResult(RESULT_OK, intent);
+        if (loginProgress != null) {
+            loginProgress.dismiss();
+        }
         finish();
     }
 
@@ -184,6 +190,8 @@ public class LoginActivity extends DefaultActivity {
         final ApiKeyHelper helper = new ApiKeyHelper(new HttpUtils());
         final CharSequence username = ((EditText)findViewById(R.id.username)).getText();
         final CharSequence password = ((EditText)findViewById(R.id.password)).getText();
+
+        loginProgress = ProgressDialog.show(LoginActivity.this, "Logging In..", "Logging into your HubSpot account.");
         
         try {
             saveApiKey(helper.requestApiKey(username, password, portalId), username);
