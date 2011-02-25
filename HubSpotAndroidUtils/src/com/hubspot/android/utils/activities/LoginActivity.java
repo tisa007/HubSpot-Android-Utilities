@@ -118,6 +118,7 @@ public class LoginActivity extends DefaultActivity {
         alert.setMessage(message);
      
         final EditText input = new EditText(this);
+        input.setSingleLine();
         if (!Utils.isEmpty(hint)) {
             input.setHint(hint);
         }
