@@ -29,7 +29,7 @@ public class LoginActivity extends DefaultActivity {
 
     //Activity Result/Request Constants
     public static final int RESULT_LOGIN_SUCCESS = -1;
-    public static final int RESULT_LOGIN_FAIL = 0;
+    public static final int RESULT_LOGIN_FAIL = 2;
     public static final int REQUEST_AUTHENTICATE_USER = 1;
     
     /** The portal ID to log in to (advanced) */
