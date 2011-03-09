@@ -1,7 +1,7 @@
 package com.hubspot.android.utils.activities;
 
-import android.app.ProgressDialog;
 import android.app.AlertDialog.Builder;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
@@ -14,9 +14,7 @@ import android.widget.Toast;
 
 import com.hubspot.android.utils.R;
 import com.hubspot.android.utils.Utils;
-import com.hubspot.android.utils.http.HttpUtils;
-import com.hubspot.android.utils.hubapi.ApiKeyHelper;
-import com.hubspot.android.utils.hubapi.ApiKeyHelperException;
+import com.hubspot.android.utils.tasks.LoginTask;
 
 public class LoginActivity extends DefaultActivity {
     /**
@@ -103,7 +101,7 @@ public class LoginActivity extends DefaultActivity {
         ((EditText)findViewById(R.id.password)).setTransformationMethod(method);
     }
 
-    private void saveApiKey(final CharSequence apiKey, final CharSequence username) {
+    public void saveApiKey(final CharSequence apiKey, final CharSequence username) {
         Intent intent = new Intent();
         intent.putExtra(API_KEY_EXTRA_NAME, apiKey);
         if (!Utils.isEmpty(username)) {
@@ -188,16 +186,14 @@ public class LoginActivity extends DefaultActivity {
 
     /** Sign in to HubSpot and get the user's API key */
     public void signInClick() {
-        final ApiKeyHelper helper = new ApiKeyHelper(new HttpUtils());
         final CharSequence username = ((EditText)findViewById(R.id.username)).getText();
         final CharSequence password = ((EditText)findViewById(R.id.password)).getText();
 
         loginProgress = ProgressDialog.show(LoginActivity.this, "Logging In..", "Logging into your HubSpot account.");
-        
-        try {
-            saveApiKey(helper.requestApiKey(username, password, portalId), username);
-        } catch (ApiKeyHelperException apiKeyHelperException) {
-            toast("Error logging in: " + apiKeyHelperException.getLocalizedMessage());
+        CharSequence portalIdSeq = "";
+        if (portalId != null) {
+            portalIdSeq = portalId.toString();
         }
+        new LoginTask(LoginActivity.this).execute(username, password, portalIdSeq);
     }
 }
