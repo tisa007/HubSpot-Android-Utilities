@@ -189,11 +189,15 @@ public class LoginActivity extends DefaultActivity {
         final CharSequence username = ((EditText)findViewById(R.id.username)).getText();
         final CharSequence password = ((EditText)findViewById(R.id.password)).getText();
 
-        loginProgress = ProgressDialog.show(LoginActivity.this, "Logging In..", "Logging into your HubSpot account.");
+        loginProgress = ProgressDialog.show(LoginActivity.this, "Logging In...", "Logging in to your HubSpot account.");
         CharSequence portalIdSeq = "";
         if (portalId != null) {
             portalIdSeq = portalId.toString();
         }
         new LoginTask(LoginActivity.this).execute(username, password, portalIdSeq);
+    }
+
+    public ProgressDialog getLoginProgress() {
+        return loginProgress;
     }
 }

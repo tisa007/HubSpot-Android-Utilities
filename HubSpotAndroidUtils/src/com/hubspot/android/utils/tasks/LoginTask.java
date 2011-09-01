@@ -17,8 +17,11 @@ public class LoginTask extends AsyncTask<CharSequence, Void, CharSequence> {
 
     private CharSequence username;
 
+    private CharSequence errorMessage;
+
     public LoginTask(final LoginActivity applicationContext) {
         this.applicationContext = applicationContext;
+        errorMessage = null;
     }
 
     @Override
@@ -34,16 +37,20 @@ public class LoginTask extends AsyncTask<CharSequence, Void, CharSequence> {
         try {
             return helper.requestApiKey(username, password, portalId);
         } catch (ApiKeyHelperException ex) {
-            CharSequence message = "Error logging in: " + ex.getLocalizedMessage();
-            Log.e(LOG_TAG, message.toString(), ex);
-            final Toast theToast = Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT);
-            theToast.show();
+            errorMessage = "Error logging in: " + ex.getLocalizedMessage();
+            Log.e(LOG_TAG, errorMessage.toString(), ex);
         }
         return null;
     }
 
     @Override
     protected void onPostExecute(CharSequence result) {
-        applicationContext.saveApiKey(result, username);
+        if (!Utils.isEmpty(errorMessage)) {
+            final Toast theToast = Toast.makeText(applicationContext, errorMessage, Toast.LENGTH_SHORT);
+            theToast.show();
+            applicationContext.getLoginProgress().dismiss();
+        } else {
+            applicationContext.saveApiKey(result, username);
+        }
     }
 }
